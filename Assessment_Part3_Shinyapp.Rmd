@@ -1,0 +1,145 @@
+---
+title: "What factors influence the air quality in California over time and is there a relationship between asthma-related emergency visits and air quality?"
+runtime: shiny
+output: html_document
+---
+##Introdcution
+Increased wildfire activity across California in recent decades has become a serious threat to nearly all dwellings in California. However, an increase in population and the steady sprawl of cities and dwellings toward the forests, as well as distinctive drought periods and beetle infestations, have enhanced the size and destructiveness of wildfires over the last decade. The devastating wildfires not only burned hundreds of thousand hectares of land, countless homes, and caused fatalities, but also contributed to a serious health problem. The air quality decreased significantly in those areas, which in turn has increased respiratory syndrome instances even at large distances from the fires. In this research paper, the correlation between air quality and emergency visits by asthma patients in California was investigated. While other studies and spatial solutions contain merely one topic, such as air quality, health-related data, or fire activity, this study will investigate a more complex and linked support tool. The tool will initiate a broader investigation on socioeconomic and health-related impacts of wildfires in California.  
+
+##A review of the literature
+Geographic information systems and science, known as GIS, use many different sources of data. Since the beginning of the century, awareness of GIS technologies has increased significantly in the realms of planning, behavior, and recovery (Smith et al. 2018). An incremental source of geospatial data is that generated from automated systems, which contain geolocation information from mobile phones, GPS devices, social media, etc. (Smith et al. 2018). This vast potential data sources sometimes lead to a common issue in GIS: uncertainty. This contributes to a difference between the subject of the data and the represented output. Inaccuracy is an error that is identified upfront, but uncertainty is an error that is not known (Goodchild and Hunter 1993). This seems logical and valid, but when datasets are involved, differentiation between these two terms is not always given. Within  health and metrology datasets, modifiable areal unit problems (MAUPs) are common (The Modifiable Areal Unit Problem and GIS, 2018). Thus, the robustness of the results should be checked by changing the scale of the aggregation in order to measure results or variation of outputs. The importance of maps to display data in a secure and graspable way is uncontroversial. Merging datasets and spatial information generate an improved output, whereas simple descriptions might be misleading.
+Nevertheless, there are good maps (Vega Orozco et al. 2012) and there are less informative maps (Eselius, 2017). When comparing maps of the same topic, it is easy to evaluate where and how information is transported, and if it is visualized in a coherent way. For instance, IBM???s Watson was able to build a model to predict car accidents in New York. Watson used historical data of car accidents and weather data. The model was programmed to use logistic regression with Spark (a package in R) to predict the probability of car accidents. The end product was ShinyApp, which is comparable to current GIS projects in terms of mapping and output (Casta????n, 2016)
+
+##Framework
+The above-mentioned challenges faced due to the Californian wildfires have existed for several years and have increased as severity and frequency of the wildfires rose. Fire suppression and forest management were part of fire containment. The effects on air quality and traceable contamination of particulates over a broad area lasted for a longer period of time and affected more people than those threatened directly by the fire.
+This paper focuses on the correlation between health data (asthma visits) and air quality between 2012 and 2016. This paper will initiate future investigations that will improve health quality and prevent the increased instances of respiratory syndromes during the wildfire season. The data was extracted from the United States Environmental Protection Agency (air quality data) and the California Department of Public Health (asthma emergency department visit rates). The command line software R was used to build a tool that tailored to further investigation of respiratory syndrome impacts. The theoretical framework proposed is shown below in Figure 1.
+
+
+![Figure_1.jpg](/Users/katrinstricker/Desktop/Katrin/Data/UCL/CASA_0005_GIS/AssessmentPart3/Shiny/Shiny_Part3_app/Figure_1.jpg)
+
+
+
+##Methodology
+The chosen R software provided the ability to build interactive maps termed Shiny apps. Shiny apps are an excellent tool to show dashboards in an interactive way. This kind of app is often used for prototyping in order to visualize large datasets and to increase the relevance and visibility of certain datasets. 
+At its core, Shiny is a tool that provides a framework to develop GUI (graphical user interface) applications. Shiny consists of three main components. Firstly, the user interface (UI) contains the required r functions to assemble an HTML user interface for the app. Secondly, the server function contains detailed instructions on how to build, change, and visualize the objects displayed in the user interface (Figure 2). Finally, the R package shinyApp connects the user interface and server code into an interactive app.
+
+![Figure_2.jpg](/Users/katrinstricker/Desktop/Katrin/Data/UCL/CASA_0005_GIS/AssessmentPart3/Shiny/Shiny_Part3_app/Figure_2.jpg)
+
+
+
+Figure 2: Reactive framework
+In order to start a spatial investigation, a data scientist will typically spend a great deal of time cleaning and manipulating data, while much less time is spent on analyzing data. Thus, spreadsheets must be cleaned of any special characters, and blank cells in the spreadsheet must be filled with 0 or NA (abbreviation for not available). It is important to conceive the structure of the data and the objects derived from it, such that the most applicable software and method are chosen at the start of an investigation.
+The user interface in ShinyApp has a variety of options for customizing the background and appearance using ShinyThemes. In addition, a CSS file can be applied to the app by linking it to a subdirectory called ???www???. One of many advantages of a ShinyApp is that it provides user-friendly tools without requiring any knowledge of HTML. Leaflet is an open-source JavaScript library, which offers mobile-friendly interactive maps. OpenStreetMap also offers maps for free, as long as credit is given to OpenStreetMap and its contributors. Furthermore, the ShinyApp package offers a variety of customizable dashboard themes and functions that execute around HTML tags that format text modules inside the ???fluid page???. In order to begin creating the proposed app to use air quality and health data, a dashboard page with header and sidebar were made. This included the option to collapse or show more information based on user preference. To provide the app with an appropriate look and feel, Shiny dashboardthemes were used. The Shiny CSS panel style and suitable font packages were downloaded via Google and importet directly from the weblink.
+
+  CSS
+    includeCSS("www/absPanels.css"),
+    includeCSS("www/style.css"),
+    shinyjs::useShinyjs(),
+    
+    tags$head(
+      tags$style(HTML("@import url('https://fonts.googleapis.com/css?family=Lato');")),
+      tags$style(HTML("@import url('https://fonts.googleapis.com/css?family=Work+Sans');")),
+      tags$style(HTML("@import url('https://fonts.googleapis.com/css?family=Quicksand');")),
+      tags$style(HTML("@import url('https://fonts.googleapis.com/css?family=Montserrat');"))
+    ),
+
+The following are commands for creating a fluid page layout, which contains rows and columns. Rows exist in the same line, while columns exist in the same horizontal space. 
+
+Map 
+      tabItem(tabName = "tab_map",
+              fluidRow(
+                column(width = 12,
+                       leafletOutput("create_leaflet_map", width = "100%"),
+                       
+                       # Select Year panel 
+                       absolutePanel(
+                         id = "abs_select_year",
+                         draggable = TRUE, 
+                         top = "1%", left = "auto", right = "58%", bottom = "auto",
+                         height = "auto", width = "500px",
+                                                
+Commands in the user interface section describe the font size and style; e.g. tags$B equals text will be written bold. Within the server command section, there are two main arguments: ???input??? and ???output???. Both are list-like objects, which must be carefully defined. Input reads values, and output writes values, such as objects to display the app and create an UI element. To begin, the data was uploaded and a function was set with a reactive expression, which returned a normal expression used to create a reactive expression. In addition, the dplyr function from the tidyverse package was used to query the asthma data. Data cells which were empty or set as ???NA??? were set to na.rm = True.
+
+asthma data
+    asthma_year_sum <- asthma_data %>%
+      dplyr::filter(Year == inp_year) %>% 
+      dplyr::group_by(Year, County) %>%
+      dplyr::summarise(num_visits = sum(`Number of Visits`, na.rm = T)) %>%
+      dplyr::ungroup() %>% 
+      dplyr::arrange(Year, County)
+
+As described in the user interface section, it was essential to write in the server section those commands that should appear on the interface. Therefore, a leaflet_map was created, which showed the number of asthma visits in reference to the selected county. The function ???lapply()??? returned the above list after applying this function. Furthermore, a Choropleth map was added, which used the click function from Shinyjs package to generate an interactive map that showed values by clicking on the chosen area in the app.
+   
+Finalizing the ShinyApp and the proposed tool, the R package Shinyapp automatically combined the user interface code and the server code into an interactive web application. 
+
+##Discussion and display of results
+The proposed tool must be tested and a more detailed study on the correlation between air quality and asthma-related visits to emergency rooms in California is being prepared. This is important, because the impact of wildfires is a growing threat to public health. The aim is to collect and retrieve datasets, which include more variables than those used in this current tool, such as wildfire activity (e.g. time, duration, size) and health data over a longer period of time. As an illustration, the results (Figures 3 and 4) of the proposed tool show the Choropleth map of California including three panels. The user can choose the year, the total number of visits on the left side, and the air quality for the chosen year on the right side. The data on the air quality includes a very detailed overview of air quality ranges per day. Both panels, number of emergency room visits, and annual air-quality can also be collapsed to better view the map. The user can move the cursor over the map and reveal the total visits per county. This tool will emphasize the correlation between air quality and emergency visits of asthma patients in California. 
+
+
+
+Figure 3: Shiny app result 2012
+Figure 4: Shiny app result 2014
+
+![Figure_3_4.jpg](/Users/katrinstricker/Desktop/Katrin/Data/UCL/CASA_0005_GIS/AssessmentPart3/Shiny/Shiny_Part3_app/Figure_3_4.jpeg)
+
+##Limitations
+This research was based on data retrieved from national health departments and environmental institutes. To present a more sophisticated correlation, additional data sets, such as fire activity and size are required. This topic requires long-term research in order to gain confidence in the root cause of asthma emergency visits. As a matter of fact, the government shut down in the US, which is still continuing, affects the availability of data, as most government websites are closed. In addition, the app has limitations in the presentation of map quality, as the map and panels could be more detailed. 
+
+##Conclusion
+Natural climate deviation, human-caused climate change, and additional increased fire activity has likely been enabled by various factors, and the effect is a significant drop in air quality. The proposed research tool can visualize the total number of asthma-related emergency visits overlaid with the air quality per county. The tool shows that some counties show a high rate of emergency visits, while also facing high rates of poor air quality However, the total population in those counties was not included in the tool. All these limitations must be further investigated. This research tool can still achieve its objectives and contribute to a better understanding of the effects of air quality on public respiratory health.
+
+
+
+
+References
+Eselius, J.O., 2017. Predicting Post-Wildfire ReGreen Rates: An application of multi-factor regression modeling, 119.
+Goodchild, M.F., 2009. GIScience and Systems, in: International Encyclopedia of Human Geography. Elsevier, pp. 526???538. https://doi.org/10.1016/B978-008044910-4.00029-8
+Goodchild, M.F., Hunter, G.J., 1993. Managing uncertainty in spatial databases: putting theory into practice. URISA J. 5, 55???62.
+Casta????n, J.C., 2016. Shiny: a data scientist???s best friend. IBM Watson Data.
+Smith, D.M.J. de, Goodchild, P.M.F., Longley, P.P.A., 2018. Geospatial Analysis 6th Edition, 2018 URL http://www.spatialanalysisonline.com/HTML/index.html (accessed 12.28.18).
+The Modifiable Areal Unit Problem and GIS [WWW Document], 2018. GIS Lounge. URL https://www.gislounge.com/modifiable-areal-unit-problem-gis/ (accessed 12.31.18).
+Vega Orozco, C., Tonini, M., Conedera, M., Kanveski, M., 2012. Cluster recognition in spatial-temporal sequences: the case of forest fires. GeoInformatica 16, 653???673. https://doi.org/10.1007/s10707-012-0161-z
+
+
+```{r, echo=FALSE}
+
+shinyAppDir("/Users/katrinstricker/Desktop/Katrin/Data/UCL/CASA_0005_GIS/AssessmentPart3/Shiny/Shiny_Part3_app") 
+options = list(width = "100%, height = 700")
+
+# Header 1
+## Header 2
+### Header 3
+#### Header 4
+##### Header 5
+###### Header 6
+
+
+  
+```
+
+This R Markdown document is made interactive using Shiny. Unlike the more traditional workflow of creating static reports, you can now create documents that allow your readers to change the assumptions underlying your analysis and see the results immediately. 
+
+To learn more, see [Interactive Documents](http://rmarkdown.rstudio.com/authoring_shiny.html).
+
+## Inputs and Outputs
+
+You can embed Shiny inputs and outputs in your document. Outputs are automatically updated whenever inputs change.  This demonstrates how a standard R plot can be made interactive by wrapping it in the Shiny `renderPlot` function. The `selectInput` and `sliderInput` functions create the input widgets used to drive the plot.
+
+
+```
+
+## Embedded Application
+
+It's also possible to embed an entire Shiny application within an R Markdown document using the `shinyAppDir` function. This example embeds a Shiny application located in another directory:
+
+
+```
+
+Note the use of the `height` parameter to determine how much vertical space the embedded application should occupy.
+
+You can also use the `shinyApp` function to define an application inline rather then in an external directory.
+
+In all of R code chunks above the `echo = FALSE` attribute is used. This is to prevent the R code within the chunk from rendering in the document alongside the Shiny components.
+
+
+

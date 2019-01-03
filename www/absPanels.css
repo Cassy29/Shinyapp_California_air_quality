@@ -1,0 +1,56 @@
+.content {
+    padding: 0px;
+}
+
+.pretty .state label {
+    color: white
+}
+
+/* - Select Year - */
+#abs_select_year {
+background-color: transparent;
+border-color: transparent;
+padding: 20px 20px 20px 20px;
+cursor: move;
+
+opacity: 0.80;
+transition: opacity 500ms 100ms;
+
+border-radius: 0px 0px;
+}
+
+/* - Hist Panel - */
+#abs_bar_panel {
+background-color: #74a9cf;
+border-color: transparent;
+padding: 0 20px 20px 20px;
+cursor: move;
+
+opacity: 0.90;
+transition: opacity 500ms 100ms;
+
+border-radius: 0px 0px;
+}
+
+#abs_bar_panel:hover {
+opacity: 1;
+transition-delay: 0;
+}
+
+/* - Anual AQI - */
+#abs_anual_aqi {
+background-color: #74a9cf;
+border-color: transparent;
+padding: 0 20px 20px 20px;
+cursor: move;
+
+opacity: 0.90;
+transition: opacity 500ms 100ms;
+
+border-radius: 0px 0px;
+}
+
+#abs_anual_aqi:hover {
+opacity: 1;
+transition-delay: 0;
+}
